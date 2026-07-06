@@ -1,0 +1,13 @@
+TASK 4.
+4.2. Phân vùng bộ nhớ của các biến được sắp xếp như sau:
+- BIKE_MODEL nằm ở vùng .rodata (lưu trên ROM/Flash) vì là mảng hằng toàn cục (const global) chứa chuỗi ký tự chỉ đọc, không thay đổi giá trị khi thực thi.
+- total_odometer nằm ở vùng .bss (chiếm RAM) vì là biến toàn cục (global) được khởi tạo giá trị ban đầu bằng 0.
+- current_speed nằm trên Stack (thuộc RAM) vì là biến cục bộ (local variable) khai báo trong hàm, chỉ tồn tại tạm thời khi hàm chạy.
+
+4.3. Khi kích hoạt crash_simulation, do đây là hàm đệ quy vô hạn không có điểm dừng, hệ thống liên tục cấp phát bộ nhớ dẫn đến Stack Overflow. Nếu chạy trên máy tính, hệ điều hành sẽ ngắt chương trình bằng lỗi Segmentation fault; nếu chạy trên MCU thực tế, CPU sẽ lập tức nhảy vào ngắt lỗi phần cứng HardFault_Handler() để xử lý.
+
+TASK 5.
+Khai báo uint16_t trip_history[20000] tạo ra mảng gồm 20000 phần tử, mỗi phần tử chiếm 2 bytes, do đó tổng dung lượng mảng cần cấp phát là 40000 bytes (tương đương khoảng 40 KB). Ta phân tích 2 cách khai báo như sau:
+Cách 1: Khai báo mảng với toàn bộ phần tử có giá trị khởi tạo bằng 0. Khi đó mảng nằm trong vùng .bss và không cần lưu trực tiếp 40 KB dữ liệu số 0 vào Flash vì startup code sẽ tự động xóa vùng RAM tương ứng về 0 khi khởi động. Cách này tiêu tốn 0 KB Flash (thỏa mãn giới hạn Flash nhỏ 20 KB) và chiếm 40 KB RAM (thỏa mãn RAM lớn 128 KB).
+Cách 2: Khai báo mảng với các phần tử có giá trị khởi tạo khác 0. Khi đó mảng nằm trong vùng .data và buộc phải lưu giữ toàn bộ khối dữ liệu 40 KB này trên Flash để startup code sao chép sang RAM khi khởi động. Vì dung lượng Flash của chip chỉ có 20 KB, cách làm này sẽ ngay lập tức gây ra lỗi tràn bộ nhớ Flash (Flash overflow).
+Qua phân tích, ta chọn Cách 1 để giúp chương trình biên dịch thành công, tối ưu tài nguyên và có thể nạp xuống vi điều khiển an toàn mà không làm quá tải bộ nhớ Flash.

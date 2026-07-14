@@ -1,0 +1,21 @@
+[GHI CHÚ TASK 5]: Tôi chọn thiết kế LED phản hồi cho ma trận phím theo CÁCH 2 (Điều khiển qua Firmware).
+[LINK VIDEO DEMO TASK 5]: 
+================================================================================
+TASK 1: KIẾN TRÚC PHẦN CỨNG GPIO
+================================================================================
+
+1.1: Hoạt động của cặp Transistor PMOS và NMOS ở chế độ Output Push-Pull:
+- Khi cấu hình xuất mức logic 1 (3.3V): Trình điều khiển nội bộ xuất điện áp điều khiển làm Transistor PMOS MỞ (dẫn điện) và Transistor NMOS ĐÓNG (ngắt). Dòng điện chảy trực tiếp từ nguồn VDD (3.3V) qua PMOS ra chân pin, cung cấp khả năng cấp dòng (Source Current) cho tải.
+- Khi cấu hình xuất mức logic 0 (0V): Trình điều khiển làm Transistor PMOS ĐÓNG và Transistor NMOS MỞ. Chân pin được nối thẳng xuống mass VSS (GND) thông qua NMOS, cung cấp khả năng hút dòng (Sink Current) từ tải về đất.
+- Tên gọi "Push-Pull" (Đẩy - Kéo) xuất phát từ cơ chế PMOS "đẩy" dòng từ VDD ra tải và NMOS "kéo" dòng từ tải xuống GND.
+
+1.2: Chế độ Input Pull-up và hiện tượng chân Floating:
+- Khi nào cần cấu hình Input Pull-up: Sử dụng khi kết nối chân GPIO với các cảm biến hoặc nút nhấn có kiểu đấu nối tích cực thấp (Active-Low) — tức là một đầu nút nhấn nối vào GPIO, đầu còn lại nối xuống GND. Trở treo lên nguồn (Pull-up resistor) tích hợp bên trong chip sẽ giữ chân GPIO luôn ổn định ở mức logic 1 (High) khi nút chưa được nhấn, tránh hiện tượng lơ lửng điện áp.
+- Hiện tượng khi để chân Input Floating (Không kết nối, không Pull-up/Pull-down): Chân GPIO lúc này có trở kháng đầu vào cực kỳ cao, đóng vai trò như một "ăng-ten" thu nhỏ cực kỳ nhạy cảm với các bức xạ điện từ và nhiễu vi sai trong môi trường. Điện áp trên chân sẽ dao động ngẫu nhiên, khiến thanh ghi dữ liệu đầu vào (IDR - Input Data Register) lật trạng thái liên tục giữa 0 và 1 một cách vô định. Điều này không chỉ làm phần mềm đọc sai logic mà còn khiến tầng đầu vào CMOS bên trong chip tiêu thụ dòng điện tĩnh cực lớn do hai transistor bổ khuyết liên tục chuyển trạng thái.
+
+================================================================================
+TASK 2: QUY TRÌNH CẤU HÌNH NGOẠI VI & TẦM QUAN TRỌNG CỦA CLOCK
+================================================================================
+
+- Tại sao mặc định tắt toàn bộ Clock ngoại vi khi Reset chip: Nhằm tối ưu hóa năng lượng tiêu thụ (Low Power Optimization). Vi điều khiển STM32 được xây dựng trên công nghệ bán dẫn CMOS. Đặc tính lõi của mạch CMOS là chỉ tiêu thụ công suất động (Dynamic Power Dissipation) đáng kể khi có sự chuyển đổi trạng thái logic (khai thác bởi tín hiệu xung nhịp Clock). Việc mặc định ngắt xung nhịp từ bus APB/AHB đến các ngoại vi không sử dụng giúp giảm thiểu tối đa dòng tiêu thụ tổng thể của toàn chip.
+- Chuyện gì xảy ra nếu quên bật Clock trước khi cấu hình GPIO: Giao diện bus kết nối giữa CPU và khối ngoại vi đó chưa được cấp xung nhịp để hoạt động. Mọi lệnh ghi (Write access) từ CPU vào các thanh ghi cấu hình (CRL, CRH) hay thanh ghi xuất dữ liệu (ODR) của Port GPIO đó đều bị phần cứng bỏ qua (lệnh ghi không có tác dụng). Đồng thời, mọi lệnh đọc (Read access) từ thanh ghi IDR sẽ chỉ trả về giá trị rác hoặc 0x00. Trên một số dòng kiến trúc ARM Cortex-M khác, việc truy xuất vào vùng nhớ ngoại vi chưa bật Clock thậm chí sẽ kích hoạt lỗi ngắt hệ thống BusFault hoặc HardFault làm treo vi điều khiển.

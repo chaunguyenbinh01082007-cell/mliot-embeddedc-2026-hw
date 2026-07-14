@@ -1,0 +1,49 @@
+TASK 1. TỔNG QUAN CÔNG CỤ & LUỒNG LÀM VIỆC
+
+1.1. Công dụng chính của 4 công cụ trong chuỗi Toolchain:
+- CMake: Hệ thống sinh cấu hình (Meta-build system), làm nhiệm vụ đọc file kịch bản CMakeLists.txt để quản lý phụ thuộc, đường dẫn include, cờ biên dịch và tạo ra các file cấu hình build cho Ninja.
+- Ninja: Hệ thống thực thi build siêu tốc, đọc cấu hình từ CMake và điều phối phân chia tác vụ song song trên các nhân CPU để gọi compiler biên dịch code nhanh nhất.
+- Compiler (arm-none-eabi-gcc): Trình biên dịch chéo (Cross-compiler) chạy trên máy tính, có nhiệm vụ dịch mã nguồn ngôn ngữ C/C++ và Assembly sang mã lệnh nhị phân của kiến trúc ARM Cortex-M trên STM32 dưới dạng các file đối tượng (.o).
+- STM32_Programmer_CLI: Công cụ dòng lệnh của STMicroelectronics dùng để giao tiếp qua mạch nạp ST-Link (SWD/JTAG), thực hiện xóa, nạp file nhị phân (.bin) vào bộ nhớ Flash và Reset vi điều khiển.
+
+1.2. Trình tự logic khi kết hợp 4 công cụ:
+- Bước 1 (CMake): Chạy đầu tiên, quét cây thư mục dự án và sinh ra thư mục build/ chứa file cấu hình build.ninja.
+- Bước 2 (Ninja): Đọc file build.ninja để phân tích đồ thị phụ thuộc và ra lệnh kích hoạt Compiler, Linker theo đúng thứ tự.
+- Bước 3 (Compiler & Linker - arm-none-eabi-gcc): Compiler dịch code thành các file đối tượng (.o). Linker liên kết các file .o cùng Linker Script để tạo ra file .elf, sau đó dùng công cụ objcopy chuyển đổi thành file ảnh nhị phân build/app_firmware.bin.
+- Bước 4 (STM32_Programmer_CLI): Chạy cuối cùng, đọc file build/app_firmware.bin và nạp trực tiếp xuống vùng nhớ Flash của chip STM32 tại địa chỉ 0x08000000, sau đó tự động Reset để chạy chương trình.
+
+---
+
+TASK 2. BẢN CHẤT LUỒNG BIÊN DỊCH & TỐI ƯU HÓA
+
+2.1. Vai trò của Linker và sự khác biệt của file final .bin:
+- Không thể nạp ngay file .o vì các file này mang tính module rời rạc: các hàm/biến chỉ lưu dưới dạng ký hiệu tương đối (chưa có địa chỉ bộ nhớ thực tế) và chưa phân giải tham chiếu chéo giữa các file code với nhau. Linker gom tất cả file .o lại, dựa vào Linker Script để cấp phát địa chỉ bộ nhớ tuyệt đối (Flash/RAM), tạo bảng Vector Table và nối liền các lời gọi hàm ngoại lai.
+- Điểm khác biệt cốt lõi: File .o (định dạng COFF/ELF) chứa mã máy nhưng bị bao bọc bởi rất nhiều siêu dữ liệu (metadata, debug symbols, bảng symbol) mà vi điều khiển không thể thực thi. File final .bin là file ảnh nhị phân thô, đã bị tước bỏ hoàn toàn metadata, chỉ chứa duy nhất chuỗi byte lệnh và dữ liệu thô để ánh xạ 1-1 thẳng vào bộ nhớ Flash của chip.
+
+2.2. Cơ chế Build tăng dần (Incremental Build) của Ninja:
+- Vai trò: Khi dự án có hàng trăm file code, việc build lại từ đầu tốn hàng phút. Incremental Build giúp tiết kiệm thời gian xuống chỉ còn vài phần nghìn giây bằng cách chỉ biên dịch lại đúng file .c vừa bị chỉnh sửa, giữ nguyên các file .o cũ và nhảy thẳng đến bước Linker.
+- Cơ chế nhận biết: Ninja theo dõi nhãn thời gian chỉnh sửa (Timestamp / mtime) của file đích (.o), file nguồn (.c) và các file header (.h) liên kết qua file phụ thuộc (.d). Nếu mtime của file .c hoặc bất kỳ file header nào được include mới hơn mtime của file .o tương ứng, Ninja sẽ quyết định gọi compiler dịch lại file đó; ngược lại sẽ bỏ qua.
+
+---
+
+TASK 3. BẢN ĐỒ BỘ NHỚ & LINKER SCRIPT
+
+3.1. Phân tích LMA, VMA của phân vùng .data:
+- LMA (Load Memory Address): Là địa chỉ nạp lưu tĩnh trên bộ nhớ Flash (ROM), được cấu hình qua từ khóa AT> FLASH. Đây là nơi lưu trữ bản sao giá trị khởi tạo ban đầu của các biến toàn cục để không bị mất dữ liệu khi mất nguồn.
+- VMA (Virtual/Runtime Memory Address): Là địa chỉ thực thi động nằm trên SRAM, được cấu hình qua từ khóa >RAM. Đây là nơi biến thực sự tồn tại, được CPU đọc/ghi trực tiếp với tốc độ cao khi chương trình đang chạy.
+- Lý do cần cả 2 địa chỉ: SRAM là bộ nhớ bay hơi (Volatile), sẽ bị xóa sạch khi mất nguồn hoặc Reset. Trong khi đó, Flash giữ được dữ liệu nhưng CPU không thể ghi đè biến liên tục với tốc độ cao. Do đó, hệ thống buộc phải lưu giá trị gốc ở Flash (LMA) để giữ trạng thái, và copy sang SRAM (VMA) khi khởi động để thực thi.
+
+3.2. Hậu quả nếu Startup code quên sao chép dữ liệu vùng .data:
+- Toàn bộ các biến toàn cục và biến tĩnh có khởi tạo giá trị sẽ không mang giá trị đúng như khai báo trong code ban đầu.
+- Khi CPU truy xuất vào địa chỉ của các biến này trên SRAM, nó sẽ đọc phải giá trị rác ngẫu nhiên (trạng thái điện áp ngẫu nhiên của ô nhớ RAM lúc vừa cấp nguồn).
+- Hậu quả: Chương trình thực thi sai logic ngay từ vi giây đầu tiên, cấu hình sai các bộ ngoại vi (GPIO, UART, Timer), hoặc gây crash hệ thống (nhảy vào ngắt lỗi HardFault_Handler).
+
+---
+
+TASK 4. KHAI BÁO CÁC CÂU LỆNH ĐIỀU KHIỂN HỆ THỐNG
+
+4.1. Câu lệnh CMake cấu hình dự án với Generator Ninja vào thư mục build:
+cmake -B build -G "Ninja"
+
+4.2. Câu lệnh gọi Ninja tiến hành biên dịch dự án trong thư mục build:
+ninja -C build

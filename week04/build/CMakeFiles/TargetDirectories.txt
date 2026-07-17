@@ -1,0 +1,3 @@
+D:/hcmut/Embedded C/PTNK/mliot-embeddedc-2026-hw/week04/build/CMakeFiles/stm32f103_aht20_baremetal.dir
+D:/hcmut/Embedded C/PTNK/mliot-embeddedc-2026-hw/week04/build/CMakeFiles/edit_cache.dir
+D:/hcmut/Embedded C/PTNK/mliot-embeddedc-2026-hw/week04/build/CMakeFiles/rebuild_cache.dir

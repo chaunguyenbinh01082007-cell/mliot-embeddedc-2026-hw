@@ -1,0 +1,32 @@
+[
+{
+  "directory": "D:/hcmut/Embedded C/PTNK/mliot-embeddedc-2026-hw/week04/build",
+  "command": "C:\\PROGRA~2\\ARMGNU~1\\14EFD8~1.2RE\\bin\\AR19DD~1.EXE -DDEBUG -DHSI_VALUE=8000000 -DSTM32F103xB -DUSE_FULL_ASSERT -I\"D:/hcmut/Embedded C/PTNK/mliot-embeddedc-2026-hw/week04\"  -mcpu=cortex-m3  -Wall -Wextra -Wpedantic -fdata-sections -ffunction-sections -O0 -g3 -std=gnu11 -o CMakeFiles\\stm32f103_aht20_baremetal.dir\\main.c.obj -c \"D:\\hcmut\\Embedded C\\PTNK\\mliot-embeddedc-2026-hw\\week04\\main.c\"",
+  "file": "D:/hcmut/Embedded C/PTNK/mliot-embeddedc-2026-hw/week04/main.c",
+  "output": "D:/hcmut/Embedded C/PTNK/mliot-embeddedc-2026-hw/week04/build/CMakeFiles/stm32f103_aht20_baremetal.dir/main.c.obj"
+},
+{
+  "directory": "D:/hcmut/Embedded C/PTNK/mliot-embeddedc-2026-hw/week04/build",
+  "command": "C:\\PROGRA~2\\ARMGNU~1\\14EFD8~1.2RE\\bin\\AR19DD~1.EXE -DDEBUG -DHSI_VALUE=8000000 -DSTM32F103xB -DUSE_FULL_ASSERT -I\"D:/hcmut/Embedded C/PTNK/mliot-embeddedc-2026-hw/week04\"  -mcpu=cortex-m3  -Wall -Wextra -Wpedantic -fdata-sections -ffunction-sections -O0 -g3 -std=gnu11 -o CMakeFiles\\stm32f103_aht20_baremetal.dir\\i2c_handler.c.obj -c \"D:\\hcmut\\Embedded C\\PTNK\\mliot-embeddedc-2026-hw\\week04\\i2c_handler.c\"",
+  "file": "D:/hcmut/Embedded C/PTNK/mliot-embeddedc-2026-hw/week04/i2c_handler.c",
+  "output": "D:/hcmut/Embedded C/PTNK/mliot-embeddedc-2026-hw/week04/build/CMakeFiles/stm32f103_aht20_baremetal.dir/i2c_handler.c.obj"
+},
+{
+  "directory": "D:/hcmut/Embedded C/PTNK/mliot-embeddedc-2026-hw/week04/build",
+  "command": "C:\\PROGRA~2\\ARMGNU~1\\14EFD8~1.2RE\\bin\\AR19DD~1.EXE -DDEBUG -DHSI_VALUE=8000000 -DSTM32F103xB -DUSE_FULL_ASSERT -I\"D:/hcmut/Embedded C/PTNK/mliot-embeddedc-2026-hw/week04\"  -mcpu=cortex-m3  -Wall -Wextra -Wpedantic -fdata-sections -ffunction-sections -O0 -g3 -std=gnu11 -o CMakeFiles\\stm32f103_aht20_baremetal.dir\\uart_handler.c.obj -c \"D:\\hcmut\\Embedded C\\PTNK\\mliot-embeddedc-2026-hw\\week04\\uart_handler.c\"",
+  "file": "D:/hcmut/Embedded C/PTNK/mliot-embeddedc-2026-hw/week04/uart_handler.c",
+  "output": "D:/hcmut/Embedded C/PTNK/mliot-embeddedc-2026-hw/week04/build/CMakeFiles/stm32f103_aht20_baremetal.dir/uart_handler.c.obj"
+},
+{
+  "directory": "D:/hcmut/Embedded C/PTNK/mliot-embeddedc-2026-hw/week04/build",
+  "command": "C:\\PROGRA~2\\ARMGNU~1\\14EFD8~1.2RE\\bin\\AR19DD~1.EXE -DDEBUG -DHSI_VALUE=8000000 -DSTM32F103xB -DUSE_FULL_ASSERT -I\"D:/hcmut/Embedded C/PTNK/mliot-embeddedc-2026-hw/week04\"  -mcpu=cortex-m3  -x assembler-with-cpp -MMD -MP -g -o CMakeFiles\\stm32f103_aht20_baremetal.dir\\startup_stm32f103xb.s.obj -c \"D:\\hcmut\\Embedded C\\PTNK\\mliot-embeddedc-2026-hw\\week04\\startup_stm32f103xb.s\"",
+  "file": "D:/hcmut/Embedded C/PTNK/mliot-embeddedc-2026-hw/week04/startup_stm32f103xb.s",
+  "output": "D:/hcmut/Embedded C/PTNK/mliot-embeddedc-2026-hw/week04/build/CMakeFiles/stm32f103_aht20_baremetal.dir/startup_stm32f103xb.s.obj"
+},
+{
+  "directory": "D:/hcmut/Embedded C/PTNK/mliot-embeddedc-2026-hw/week04/build",
+  "command": "C:\\PROGRA~2\\ARMGNU~1\\14EFD8~1.2RE\\bin\\AR19DD~1.EXE -DDEBUG -DHSI_VALUE=8000000 -DSTM32F103xB -DUSE_FULL_ASSERT -I\"D:/hcmut/Embedded C/PTNK/mliot-embeddedc-2026-hw/week04\"  -mcpu=cortex-m3  -Wall -Wextra -Wpedantic -fdata-sections -ffunction-sections -O0 -g3 -std=gnu11 -o CMakeFiles\\stm32f103_aht20_baremetal.dir\\system_stm32f1xx.c.obj -c \"D:\\hcmut\\Embedded C\\PTNK\\mliot-embeddedc-2026-hw\\week04\\system_stm32f1xx.c\"",
+  "file": "D:/hcmut/Embedded C/PTNK/mliot-embeddedc-2026-hw/week04/system_stm32f1xx.c",
+  "output": "D:/hcmut/Embedded C/PTNK/mliot-embeddedc-2026-hw/week04/build/CMakeFiles/stm32f103_aht20_baremetal.dir/system_stm32f1xx.c.obj"
+}
+]

@@ -1,0 +1,7 @@
+# ninja log v7
+157	363	8059837474518564	CMakeFiles/stm32f103_aht20_baremetal.dir/startup_stm32f103xb.s.obj	9eb1e8d2f6561696
+182	506	8059837474828479	CMakeFiles/stm32f103_aht20_baremetal.dir/system_stm32f1xx.c.obj	1dee47d0199ec994
+69	507	8059837473597925	CMakeFiles/stm32f103_aht20_baremetal.dir/main.c.obj	35f686a93635b1ad
+129	511	8059837474257064	CMakeFiles/stm32f103_aht20_baremetal.dir/uart_handler.c.obj	d7293466df059ff5
+102	522	8059837474026658	CMakeFiles/stm32f103_aht20_baremetal.dir/i2c_handler.c.obj	e6b83c350aecd852
+522	1254	8059837478174869	stm32f103_aht20_baremetal.elf	5e8e8660571ca2a6

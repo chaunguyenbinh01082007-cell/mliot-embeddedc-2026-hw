@@ -1,5 +1,5 @@
 [GHI CHÚ TASK 5]: Tôi chọn thiết kế LED phản hồi cho ma trận phím theo CÁCH 2 (Điều khiển qua Firmware).
-[LINK VIDEO DEMO TASK 5]: https://youtube.com/shorts/zjKTUZBQ0lE?si=-NFEmwGjOv9Kxbst
+[LINK VIDEO DEMO TASK 5]: https://youtube.com/shorts/Fyo95eN387o?feature=share
 ================================================================================
 TASK 1: KIẾN TRÚC PHẦN CỨNG GPIO
 ================================================================================
